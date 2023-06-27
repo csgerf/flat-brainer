@@ -3,24 +3,29 @@ import json
 import numpy as np
 import nrrd
 
-import src.modules.flatmap.ccf_streamlines.projection as ccfproj
-from src.modules.flatmap.external_data_registry import get_view_lookup_file_path, get_streamline_path, get_isocortex_metric_path, \
-    get_atlas_file_path, get_other_file_path
+from src.flatmap.ccf_streamlines import projection as ccfproj
+from src.flatmap import external_data_registry as data_registry
+
 
 DEFAULT_DATA_DIRECTORY = "C:\\dev\\working\\flat-map\\flatmap\\data"
-AVERAGE_TEMPLATE_PATH = "C:\\dev\\working\\flat-map\\flatmap\\data\\average_template_10.nrrd"
+AVERAGE_TEMPLATE_PATH = (
+    "C:\\dev\\working\\flat-map\\flatmap\\data\\average_template_10.nrrd"
+)
 BoundaryType = Dict[str, np.ndarray]
 
 
-def get_boundaries(view_lookup_file="flatmap_butterfly",
-                   hemisphere='right_for_both',
-                   view_space_for_other_hemisphere='flatmap_butterfly') -> Tuple[BoundaryType, BoundaryType]:
-    projected_atlas_file_path = get_atlas_file_path(view_lookup_file)
-    label_file_path = get_other_file_path("labelDescription_ITKSNAPColor.txt")
+def get_boundaries(
+    view_lookup_file: str = "flatmap_butterfly",
+    hemisphere: str = "right_for_both",
+    view_space_for_other_hemisphere: str = "flatmap_butterfly",
+) -> Tuple[BoundaryType, BoundaryType]:
+    projected_atlas_file_path = data_registry.get_atlas_file_path(view_lookup_file)
+    label_file_path = data_registry.get_other_file_path(
+        "labelDescription_ITKSNAPColor.txt"
+    )
 
     bf_boundary_finder = ccfproj.BoundaryFinder(
-        projected_atlas_file=projected_atlas_file_path,
-        labels_file=label_file_path
+        projected_atlas_file=projected_atlas_file_path, labels_file=label_file_path
     )
 
     # We get the left hemisphere region boundaries with the default arguments
@@ -33,28 +38,26 @@ def get_boundaries(view_lookup_file="flatmap_butterfly",
         # to plot both hemispheres at the same time
         hemisphere=hemisphere,
         # we also want the hemispheres to be adjacent
-        view_space_for_other_hemisphere=view_space_for_other_hemisphere
+        view_space_for_other_hemisphere=view_space_for_other_hemisphere,
     )
 
     return bf_left_boundaries, bf_right_boundaries
 
 
-def get_average_template_projection(view_lookup_file="flatmap_butterfly"):
-    view_lookup_file = get_view_lookup_file_path("flatmap_butterfly")
-    surface_paths_file = get_streamline_path("surface_paths_10_v3")
+def get_average_template_projection(view_lookup_file: str = "flatmap_butterfly"):
+    view_lookup_file = data_registry.get_view_lookup_file_path("flatmap_butterfly")
+    surface_paths_file = data_registry.get_streamline_path("surface_paths_10_v3")
 
     proj_bf = ccfproj.Isocortex2dProjector(
         projection_file=view_lookup_file,
         surface_paths_file=surface_paths_file,
-
         # Specify that we want to project both hemispheres
         hemisphere="both",
-
         # The butterfly view doesn't contain space for the right hemisphere,
         # but the projector knows where to put the right hemisphere data so
         # the two hemispheres are adjacent if we specify that we're using the
         # butterfly flatmap
-        view_space_for_other_hemisphere='flatmap_butterfly',
+        view_space_for_other_hemisphere="flatmap_butterfly",
     )
 
     template, _ = nrrd.read(AVERAGE_TEMPLATE_PATH)
@@ -62,27 +65,30 @@ def get_average_template_projection(view_lookup_file="flatmap_butterfly"):
     return bf_projection_max
 
 
-def get_isocortex_3d_projector(view_lookup_file="flatmap_butterfly",
-                               surface_paths_file="surface_paths_10_v3",
-                               hemisphere="both",
-                               view_space_for_other_hemisphere='flatmap_butterfly',
-                               thickness_type="normalized_layers"  # each layer will have the same thickness everywhere
-                               ) -> ccfproj.Isocortex3dProjector:
-    view_lookup_file = get_view_lookup_file_path(view_lookup_file)
-    surface_paths_file = get_streamline_path(surface_paths_file)
-    layer_depth_file = get_isocortex_metric_path("avg_layer_depths")
-    streamline_layer_thickness_file_path = get_isocortex_metric_path("cortical_layers_10_v2")
+def get_isocortex_3d_projector(
+    view_lookup_file: str = "flatmap_butterfly",
+    surface_paths_file: str = "surface_paths_10_v3",
+    hemisphere: str = "both",
+    view_space_for_other_hemisphere: str = "flatmap_butterfly",
+    thickness_type: str = "normalized_layers",  # each layer will have the same thickness everywhere
+    ) -> ccfproj.Isocortex3dProjector:
+    view_lookup_file = data_registry.get_view_lookup_file_path(view_lookup_file)
+    surface_paths_file = data_registry.get_streamline_path(surface_paths_file)
+    layer_depth_file = data_registry.get_isocortex_metric_path("avg_layer_depths")
+    streamline_layer_thickness_file_path = data_registry.get_isocortex_metric_path(
+        "cortical_layers_10_v2"
+    )
 
     with open(layer_depth_file, "r") as f:
         layer_tops = json.load(f)
 
     layer_thicknesses = {
-        'Isocortex layer 1': layer_tops['2/3'],
-        'Isocortex layer 2/3': layer_tops['4'] - layer_tops['2/3'],
-        'Isocortex layer 4': layer_tops['5'] - layer_tops['4'],
-        'Isocortex layer 5': layer_tops['6a'] - layer_tops['5'],
-        'Isocortex layer 6a': layer_tops['6b'] - layer_tops['6a'],
-        'Isocortex layer 6b': layer_tops['wm'] - layer_tops['6b'],
+        "Isocortex layer 1": layer_tops["2/3"],
+        "Isocortex layer 2/3": layer_tops["4"] - layer_tops["2/3"],
+        "Isocortex layer 4": layer_tops["5"] - layer_tops["4"],
+        "Isocortex layer 5": layer_tops["6a"] - layer_tops["5"],
+        "Isocortex layer 6a": layer_tops["6b"] - layer_tops["6a"],
+        "Isocortex layer 6b": layer_tops["wm"] - layer_tops["6b"],
     }
 
     proj_butterfly_slab = ccfproj.Isocortex3dProjector(
