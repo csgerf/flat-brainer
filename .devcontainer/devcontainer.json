@@ -1,0 +1,48 @@
+{
+    "name": "Python Project",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "..",
+        "args": { 
+            // Update 'VARIANT' to pick a Python version: 3, 3.8, 3.7, 3.6 
+            "VARIANT": "3.10"
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/python:1": "none",
+        "ghcr.io/devcontainers/features/node:1": "none",
+		"ghcr.io/devcontainers/features/git:1": {
+            "version": "latest",
+            "ppa": "false"
+        }
+    },
+
+    // Set *default* container specific settings.json values on container create. 
+    "settings": { 
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+
+    // Add the IDs of extensions you want installed when the container is created.
+    "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "benjaminbenais.copilot-theme",
+        "eamodio.gitlens",
+        "ms-python.isort",
+        "ms-toolsai.jupyter",
+        "yzhang.markdown-all-in-one",
+        "github.copilot-labs",
+        "github.copilot-nightly",
+        "redhat.vscode-yaml",
+        "ms-vscode.vs-keybindings",
+        "shd101wyy.markdown-preview-enhanced",
+        "bierner.markdown-mermaid",
+        "ms-python.mypy-type-checker",
+        "vscode-icons-team.vscode-icons",
+        "tomoki1207.pdf",
+        "davidanson.vscode-markdownlint",
+        "christian-kohler.path-intellisense",
+        "njpwerner.autodocstring",
+        "magicstack.magicpython"
+    ]
+}

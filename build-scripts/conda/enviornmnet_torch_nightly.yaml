@@ -1,0 +1,12 @@
+channels:
+  - pytorch-nightly
+  - nvidia
+  - conda-forge
+  - fastai
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - tqdm
+  - tensorboard
+  - tensorboardX
