@@ -1,8 +1,8 @@
 from typing import Dict, Tuple
 import numpy as np
 import time
-import src.modules.flatmap.ccf_streamlines.projection as ccfproj
-from src.modules.flatmap.ccf_streamlines.morphology import transform_coordinates_to_volume
+import src.flatmap.ccf_streamlines.projection as ccfproj
+from src.flatmap.ccf_streamlines.morphology import transform_coordinates_to_volume
 import matplotlib.pyplot as plt
 
 from skimage.morphology import binary_dilation, disk, dilation
@@ -51,18 +51,18 @@ def plot_boundaries(axes, bf_left_boundaries, bf_right_boundaries, cmap: str = "
     return axes
 
 
-def expand_label_image(image, radius: int = 12):
+def expand_label_image(image: np.ndarray, radius: int = 12) -> np.ndarray:
     image = expand_labels(image, radius)
 
     return image
 
 
-def dilate_image(image, radius: int = 12):
+def dilate_image(image: np.ndarray, radius: int = 12) -> np.ndarray:
     image = dilation(image, disk(radius))
 
     return image
 
 
-def dilate_binary_image(image, radius: int = 12):
+def dilate_binary_image(image: np.ndarray, radius: int = 12) -> np.ndarray:
     image = binary_dilation(image, disk(radius))
     return image
