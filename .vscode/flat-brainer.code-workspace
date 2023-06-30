@@ -1,0 +1,22 @@
+{
+    "folders": [
+		{
+			"path": "../src"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../docs"
+		},
+		{
+			"path": "../notebooks"
+		}
+	],
+	"settings": {
+		"terminal.integrated.env.windows": {
+			"PATH": "c:/MBFDev/dev/csgerf/flat-brainer;${env:PATH}",
+			"PYTHONPATH": "c:/MBFDev/dev/csgerf/flat-brainer:${env:PYTHONPATH}"
+		}
+	}
+}
