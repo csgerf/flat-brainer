@@ -13,7 +13,7 @@ from scipy.spatial.distance import cdist
 # from .ccf_streamlines.linestring3d import LineString3D
 from .linestring3d import LineString3D
 
-from src.modules.flatmap.types import OnePath, ImakeLike
+from src.flatmap.types import OnePath, ImakeLike
 
 
 __ALL__ = ["Isocortex2dProjector",
@@ -31,7 +31,6 @@ HEMISPHERE_SPACE_VIEW_LOOKUP = {
     "side": 270,
     "rotated": 390,
 }
-
 
 
 class Isocortex2dProjector:

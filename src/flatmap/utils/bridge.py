@@ -9,9 +9,15 @@ from src.flatmap import external_data_registry as data_registry
 
 DEFAULT_DATA_DIRECTORY = "C:\\dev\\working\\flat-map\\flatmap\\data"
 AVERAGE_TEMPLATE_PATH = (
-    "C:\\dev\\working\\flat-map\\flatmap\\data\\average_template_10.nrrd"
+    "D:\\data\\neuro\\Allen\\average_template_10.nrrd"
 )
 BoundaryType = Dict[str, np.ndarray]
+
+
+__ALL__ = [
+    "get_boundaries",
+    "get_average_template_projection",
+]
 
 
 def get_boundaries(

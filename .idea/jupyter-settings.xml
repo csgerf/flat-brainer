@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JupyterPersistentConnectionParameters">
+    <option name="knownRemoteServers">
+      <list>
+        <JupyterConnectionParameters>
+          <option name="authType" value="notebook" />
+          <option name="token" value="d7e4cdcd620bfbfca71a276109ce33dcc855c418142b479e" />
+          <option name="urlString" value="http://localhost:8889/" />
+          <authParams2>
+            <map>
+              <entry key="token" value="d7e4cdcd620bfbfca71a276109ce33dcc855c418142b479e" />
+            </map>
+          </authParams2>
+        </JupyterConnectionParameters>
+      </list>
+    </option>
+    <option name="moduleParameters">
+      <map>
+        <entry key="$PROJECT_DIR$/../../../amoe/couscous/.idea/couscous.iml">
+          <value>
+            <JupyterConnectionParameters>
+              <option name="managed" value="true" />
+              <option name="sdkHomePath" value="C:\Users\scott\miniconda3\envs\qlib9\python.exe" />
+            </JupyterConnectionParameters>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../../current_playground/.idea/current_playground.iml">
+          <value>
+            <JupyterConnectionParameters>
+              <option name="managed" value="true" />
+              <option name="sdkHomePath" value="C:\Users\scott\miniconda3\envs\qlib9\python.exe" />
+            </JupyterConnectionParameters>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../../kaggle/hubmap-2022/.idea/hubmap-2022.iml">
+          <value>
+            <JupyterConnectionParameters>
+              <option name="managed" value="true" />
+              <option name="sdkHomePath" value="C:\Users\scott\miniconda3\envs\kore\python.exe" />
+            </JupyterConnectionParameters>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../../kaggle/kore/kore/.idea/kore.iml">
+          <value>
+            <JupyterConnectionParameters>
+              <option name="managed" value="true" />
+              <option name="sdkHomePath" value="C:\Users\scott\miniconda3\envs\kore\python.exe" />
+            </JupyterConnectionParameters>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

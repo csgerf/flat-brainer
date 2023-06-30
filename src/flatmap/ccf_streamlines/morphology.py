@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple, Union, Dict
 import numpy as np
 import pandas as pd
-from src.modules.flatmap.ccf_streamlines.coordinates import coordinates_to_voxels
+from src.flatmap.ccf_streamlines.coordinates import coordinates_to_voxels
 
 __ALL__ = ["transform_coordinates_to_volume",
            ]

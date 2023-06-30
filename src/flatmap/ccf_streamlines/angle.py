@@ -1,7 +1,7 @@
 import h5py
 import numpy as np
-from src.modules.flatmap.ccf_streamlines.coordinates import coordinates_to_voxels
-from src.modules.flatmap.ccf_streamlines.projection import _matching_voxel_indices
+from src.flatmap.ccf_streamlines.coordinates import coordinates_to_voxels
+from src.flatmap.ccf_streamlines.projection import _matching_voxel_indices
 from scipy.spatial.distance import euclidean
 
 
