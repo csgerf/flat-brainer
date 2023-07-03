@@ -2,15 +2,14 @@ from typing import Tuple, List, Dict, Union, Optional, Any
 import nrrd
 import h5py
 import logging
-import itertools
 import numpy as np
 import pandas as pd
-# from .ccf_streamlines.coordinates import coordinates_to_voxels
-from .coordinates import coordinates_to_voxels
+
 from skimage.measure import find_contours
 from tqdm import tqdm
 from scipy.spatial.distance import cdist
-# from .ccf_streamlines.linestring3d import LineString3D
+
+from .util import coordinates_to_voxels
 from .linestring3d import LineString3D
 
 from src.flatmap.types import OnePath, ImakeLike

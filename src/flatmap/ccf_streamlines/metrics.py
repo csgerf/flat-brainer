@@ -1,5 +1,9 @@
 import numpy as np
 
+__ALL__ = [
+    "measure_streamline_layer_thicknesses",
+]
+
 
 def measure_streamline_layer_thicknesses(layer_volume, paths, resolution):
     """ Measure the start, end, and thickness of layers

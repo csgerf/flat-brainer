@@ -88,6 +88,9 @@ def get_atlas_file_path(atlas_name: str) -> str:
 
 
 def get_view_lookup_file_path(view_name: str) -> str:
+    print(view_name)
+    if view_name not in VIEW_LOOKUP_FILES:
+        raise ValueError(f"View name {view_name} is not a valid view name.")
     return os.path.join(DEFAULT_DATA_DIRECTORY, VIEW_LOOKUP_FILES[view_name])
 
 

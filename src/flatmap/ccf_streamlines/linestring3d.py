@@ -1,6 +1,11 @@
 import numpy as np
 
 
+__ALL__ = [
+    "LineString3D",
+]
+
+
 class LineString3D:
     """
     Class for operating on 3D paths

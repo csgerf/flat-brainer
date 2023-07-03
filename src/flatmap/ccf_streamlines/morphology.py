@@ -1,9 +1,11 @@
 from typing import List, Optional, Tuple, Union, Dict
-import numpy as np
-import pandas as pd
-from src.flatmap.ccf_streamlines.coordinates import coordinates_to_voxels
 
-__ALL__ = ["transform_coordinates_to_volume",
+import pandas as pd
+from .util import transform_coordinates_to_volume
+
+__ALL__ = ["load_swc_as_dataframe",
+           "transform_swc_to_volume",
+           "find_topological_point_coordinates",
            ]
 
 
@@ -82,39 +84,6 @@ def transform_swc_to_volume(
     coords = swc_df.loc[:, ['x', 'y', 'z']].values
 
     return transform_coordinates_to_volume(coords, volume_shape, resolution)
-
-
-def transform_coordinates_to_volume(
-        coords,
-        volume_shape: Tuple[int, int, int] = (1320, 800, 1140),
-        resolution: Tuple[int, int, int] = (10, 10, 10),
-) -> np.ndarray:
-    """ Create a volume with counts of points.
-
-    Parameters
-    ----------
-    coords : (N, 3) array
-        Coordinates of points
-    volume_shape : 3-tuple of ints, default (1320, 800, 1140)
-        Shape of target volume in voxels
-    resolution : 3-tuple of ints, default (10, 10, 10)
-        Size of voxels in microns
-
-    Returns
-    -------
-    volume : array
-        Volume with shape `volume_shape` with counts of points in each voxel
-    """
-    voxels = coordinates_to_voxels(coords, resolution=resolution)
-
-    # Count the nodes in each voxel
-    populated_voxels, counts = np.unique(voxels, axis=0, return_counts=True)
-
-    # Place counts into volume
-    volume = np.zeros(volume_shape, dtype=np.uint32)
-    volume[populated_voxels[:, 0], populated_voxels[:, 1], populated_voxels[:, 2]] = counts
-
-    return volume
 
 
 def find_topological_point_coordinates(swc_df):

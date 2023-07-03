@@ -44,38 +44,7 @@ def create_top_left_images(image_list: List[np.ndarray]):
         top_image[top_max > 0] = i + 1
         left_image[left_max > 0] = i + 1
 
-    return {"left": left_image, "top": top_image}
-
-
-def create_output_image(morphological_list, bf_left_boundaries, bf_right_boundaries, bf_projection_max):
-    label_image = create_label_images(morphological_list)
-    top_left_images = create_top_left_images(morphological_list)
-    top_image = np.fliplr(top_left_images["top"])
-    left_image = top_left_images["left"]
-
-    plt.style.use('dark_background')
-    label_cmap = ListedColormap(
-        ['black', 'green', 'red', 'blue', 'orange', 'yellow', 'purple', 'pink', 'cyan', 'brown', 'white'])
-
-    fig, axes = setup_main_plot()
-    axes = plot_boundaries(axes, bf_left_boundaries, bf_right_boundaries)
-    color_map_template = "Greys_r"
-    color_map = "Dark2_r"
-
-    dilated_image = label_image.copy()
-    mid_point = dilated_image.shape[1] // 2
-    end_point = dilated_image.shape[1]
-    dilated_image[:, 0:mid_point] = expand_label_image(dilated_image[:, 0:mid_point], 6)
-    dilated_image[:, mid_point:end_point] = expand_label_image(dilated_image[:, mid_point:end_point], 3)
-    dilated_image = np.fliplr(dilated_image)
-
-    axes[1, 1].imshow(bf_projection_max.T, cmap=color_map_template, alpha=1.0, interpolation=None)
-    ax = axes[1, 1].imshow(dilated_image, cmap=label_cmap, alpha=0.5, interpolation=None)
-
-    axes[0, 1].imshow(top_image, cmap=label_cmap, alpha=1.0, interpolation=None)
-    axes[1, 0].imshow(left_image, cmap=label_cmap, alpha=1.0, interpolation=None)
-
-    fig.savefig("test.png", dpi=300)
+    return {"left": left_image,"top": top_image}
 
 
 def main():
@@ -107,19 +76,25 @@ def main():
     print(f"Allen annotation path: {ALLEN_ANNOTATION_PATH}")
 
     view_space_for_other_hemisphere = "flatmap_butterfly"
-    view_lookup_file = "flatmap_butterfly"
+    view_lookup_file="flatmap_butterfly"
     proj_butterfly_slab = get_isocortex_3d_projector(view_lookup_file=view_lookup_file)
-    bf_left_boundaries, bf_right_boundaries = get_boundaries(view_lookup_file=view_lookup_file,
-                                                             view_space_for_other_hemisphere=view_space_for_other_hemisphere)
+    bf_left_boundaries, bf_right_boundaries = get_boundaries(view_lookup_file=view_lookup_file, view_space_for_other_hemisphere=view_space_for_other_hemisphere)
     bf_projection_max = get_average_template_projection(view_lookup_key=view_lookup_file)
 
     marker_points = get_marker_points_from_xml(CASE_FILE_PATH)
+
+    morphological_list = []
+    names = marker_points.keys()
+    volume_shape = (1320, 800, 1140)
+    factor_values = (-10, -10, 10)
 
     morphological_dict = {
         "unnormalized": [],
         # "normalized_layers": [],
         # "normalized_full": []
     }
+    names = marker_points.keys()
+    volume_shape = (1320, 800, 1140)
     factor_values = (-1, -1, 1)
 
     for i, points in enumerate(marker_points.values()):
@@ -139,12 +114,33 @@ def main():
         toc = time.perf_counter()
         print(f"Finished in {toc - tic:0.4f} seconds")
 
-    morphological_list = morphological_dict["unnormalized"]  # unnormalized, normalized_layers, normalized_full
-    create_output_image(morphological_list=morphological_list,
-                        bf_left_boundaries=bf_left_boundaries,
-                        bf_right_boundaries=bf_right_boundaries,
-                        bf_projection_max=bf_projection_max)
+    morphological_list = morphological_dict["unnormalized"] # unnormalized, normalized_layers, normalized_full
+    label_image = create_label_images(morphological_list)
+    top_left_images = create_top_left_images(morphological_list)
+    top_image = np.fliplr(top_left_images["top"])
+    left_image = top_left_images["left"]
 
+    plt.style.use('dark_background')
+    label_cmap = ListedColormap(['black', 'green', 'red', 'blue', 'orange', 'yellow', 'purple', 'pink', 'cyan', 'brown', 'white'])
 
-if __name__ == "__main__":
-    main()
+    fig, axes = setup_main_plot()
+    axes = plot_boundaries(axes, bf_left_boundaries, bf_right_boundaries)
+    color_map_template = "Greys_r"
+    color_map = "Dark2_r"
+
+    dilated_image = label_image.copy()
+    mid_point = dilated_image.shape[1] // 2
+    end_point = dilated_image.shape[1]
+    dilated_image[:, 0:mid_point] = expand_label_image(dilated_image[:, 0:mid_point], 6)
+    dilated_image[:, mid_point:end_point] = expand_label_image(dilated_image[:, mid_point:end_point], 3)
+    dilated_image = np.fliplr(dilated_image)
+
+    axes[1, 1].imshow(bf_projection_max.T, cmap=color_map_template, alpha=1.0, interpolation=None)
+    ax = axes[1, 1].imshow(dilated_image, cmap=label_cmap, alpha=0.5, interpolation=None)
+
+    axes[0, 1].imshow(top_image, cmap=label_cmap, alpha=1.0, interpolation=None)
+    axes[1, 0].imshow(left_image, cmap=label_cmap, alpha=1.0, interpolation=None)
+
+main()
+# if __name__ == "__main__":
+#     plt.show()

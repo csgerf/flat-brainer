@@ -12,7 +12,7 @@ from matplotlib.colors import ListedColormap
 import src
 from src.core.utils import fs
 import src.core.utils.fs as fs
-from src.flatmap.utils.bridge import get_boundaries, get_isocortex_3d_projector, get_average_template_projection
+from src.flatmap.utils.bridge import get_boundaries, get_coordinate_projector, get_average_template_projection
 from src.flatmap.utils.read_ni_output import get_marker_points_from_xml
 from src.flatmap.ccf_streamlines.morphology import transform_coordinates_to_volume
 from src.flatmap.utils.nb_utils import get_projection_images_from_dict, setup_main_plot, plot_boundaries
@@ -75,7 +75,7 @@ def create_output_image(morphological_list, bf_left_boundaries, bf_right_boundar
     axes[0, 1].imshow(top_image, cmap=label_cmap, alpha=1.0, interpolation=None)
     axes[1, 0].imshow(left_image, cmap=label_cmap, alpha=1.0, interpolation=None)
 
-    fig.savefig("test.png", dpi=300)
+    fig.savefig("test_coord.png", dpi=300)
 
 
 def main():
@@ -108,7 +108,9 @@ def main():
 
     view_space_for_other_hemisphere = "flatmap_butterfly"
     view_lookup_file = "flatmap_butterfly"
-    proj_butterfly_slab = get_isocortex_3d_projector(view_lookup_file=view_lookup_file)
+    # proj_butterfly_slab = get_isocortex_3d_projector(view_lookup_file=view_lookup_file)
+    proj_butterfly_slab = get_coordinate_projector(view_lookup_file=view_lookup_file)
+
     bf_left_boundaries, bf_right_boundaries = get_boundaries(view_lookup_file=view_lookup_file,
                                                              view_space_for_other_hemisphere=view_space_for_other_hemisphere)
     bf_projection_max = get_average_template_projection(view_lookup_key=view_lookup_file)
@@ -130,10 +132,15 @@ def main():
         points_vals_copy = np.floor(points_vals_copy / factor_values).astype(int)
         points_vals = points_vals_copy.copy()
 
-        point_vol = transform_coordinates_to_volume(points_vals, resolution=(10, 10, 10))
+        # point_vol = transform_coordinates_to_volume(points_vals, resolution=(10, 10, 10))
 
         for thickness_type in morphological_dict.keys():
-            morph_layers = proj_butterfly_slab.project_volume(point_vol, thickness_type=thickness_type)
+            morph_layers = proj_butterfly_slab.project_coordinates(points_vals,
+                                                                   thickness_type=thickness_type,
+                                                                   hemisphere="both",
+                                                                   view_space_for_other_hemisphere=False,
+                                                                   drop_voxels_outside_view_streamlines=False,
+                                                                   )
             morphological_dict[thickness_type].append(morph_layers)
 
         toc = time.perf_counter()
