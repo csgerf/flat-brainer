@@ -10,11 +10,14 @@ load_dotenv()
 
 
 enviornment_data_dir = os.getenv("ALLEN_CCF_STREAMLINE_DATA_DIR")
+allen_atlas_data_dir = os.getenv("ALLEN_ATLAS_FILES")
 
 if enviornment_data_dir is not None and isinstance(enviornment_data_dir, str):
     DEFAULT_DATA_DIRECTORY = Path(enviornment_data_dir)
 else:
     DEFAULT_DATA_DIRECTORY = Path("C:\\dev\\working\\flat-map\\flatmap\\data")
+
+ALLEN_ATLAS_DIR = allen_atlas_data_dir
 
 
 # STREAMLINE_DOWNLOAD_URL = "https://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/cortical_coordinates/ccf_2017/ccf_streamlines_assets/streamlines/" 
@@ -58,7 +61,14 @@ STREAMLINE_FILES = {
 ISOCORTEX_METRIC_FILES = {  
     "avg_layer_depths": "avg_layer_depths.json",  
     "cortical_layers_10_v2": "cortical_layers_10_v2.h5",  
-}  
+}
+
+
+ATLAS_FILES = {
+    "average_template_10": "average_template_10.nrrd",
+    "average_template_25": "average_template_25.nrrd",
+    "annotation_10": "annotation_10.nrrd",
+}
 
 
 def get_other_file_path(file_name: str) -> str:
@@ -79,3 +89,7 @@ def get_atlas_file_path(atlas_name: str) -> str:
 
 def get_view_lookup_file_path(view_name: str) -> str:
     return os.path.join(DEFAULT_DATA_DIRECTORY, VIEW_LOOKUP_FILES[view_name])
+
+
+def get_atlas_files(file_key: str) -> str:
+    return os.path.join(ALLEN_ATLAS_DIR, ATLAS_FILES[file_key])

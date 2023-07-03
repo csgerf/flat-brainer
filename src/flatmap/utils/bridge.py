@@ -17,7 +17,24 @@ BoundaryType = Dict[str, np.ndarray]
 __ALL__ = [
     "get_boundaries",
     "get_average_template_projection",
+    "get_isocortex_3d_projector",
 ]
+
+
+def get_layer_depth_from_json(json_file: str):
+    with open(json_file, "r") as f:
+        layer_tops = json.load(f)
+
+    layer_thicknesses = {
+        "Isocortex layer 1": layer_tops["2/3"],
+        "Isocortex layer 2/3": layer_tops["4"] - layer_tops["2/3"],
+        "Isocortex layer 4": layer_tops["5"] - layer_tops["4"],
+        "Isocortex layer 5": layer_tops["6a"] - layer_tops["5"],
+        "Isocortex layer 6a": layer_tops["6b"] - layer_tops["6a"],
+        "Isocortex layer 6b": layer_tops["wm"] - layer_tops["6b"],
+    }
+
+    return layer_thicknesses
 
 
 def get_boundaries(
@@ -50,8 +67,8 @@ def get_boundaries(
     return bf_left_boundaries, bf_right_boundaries
 
 
-def get_average_template_projection(view_lookup_file: str = "flatmap_butterfly"):
-    view_lookup_file = data_registry.get_view_lookup_file_path("flatmap_butterfly")
+def get_average_template_projection(view_lookup_key: str = "flatmap_butterfly"):
+    view_lookup_file = data_registry.get_view_lookup_file_path(view_lookup_key)
     surface_paths_file = data_registry.get_streamline_path("surface_paths_10_v3")
 
     proj_bf = ccfproj.Isocortex2dProjector(
@@ -63,10 +80,11 @@ def get_average_template_projection(view_lookup_file: str = "flatmap_butterfly")
         # but the projector knows where to put the right hemisphere data so
         # the two hemispheres are adjacent if we specify that we're using the
         # butterfly flatmap
-        view_space_for_other_hemisphere="flatmap_butterfly",
+        view_space_for_other_hemisphere=view_lookup_key,
     )
 
-    template, _ = nrrd.read(AVERAGE_TEMPLATE_PATH)
+    average_template_path = data_registry.get_atlas_files("average_template_10")
+    template, _ = nrrd.read(average_template_path)
     bf_projection_max = proj_bf.project_volume(template)
     return bf_projection_max
 
@@ -85,17 +103,7 @@ def get_isocortex_3d_projector(
         "cortical_layers_10_v2"
     )
 
-    with open(layer_depth_file, "r") as f:
-        layer_tops = json.load(f)
-
-    layer_thicknesses = {
-        "Isocortex layer 1": layer_tops["2/3"],
-        "Isocortex layer 2/3": layer_tops["4"] - layer_tops["2/3"],
-        "Isocortex layer 4": layer_tops["5"] - layer_tops["4"],
-        "Isocortex layer 5": layer_tops["6a"] - layer_tops["5"],
-        "Isocortex layer 6a": layer_tops["6b"] - layer_tops["6a"],
-        "Isocortex layer 6b": layer_tops["wm"] - layer_tops["6b"],
-    }
+    layer_thicknesses = get_layer_depth_from_json(layer_depth_file)
 
     proj_butterfly_slab = ccfproj.Isocortex3dProjector(
         # Similar inputs as the 2d version...
@@ -110,3 +118,11 @@ def get_isocortex_3d_projector(
     )
 
     return proj_butterfly_slab
+
+
+def get_isocrotex_entire_projector(resolution=(10, 10, 10)):
+    proj = ccfproj.IsocortexEntireProjector(
+        resolution=resolution,
+        surface_paths_file=AVERAGE_TEMPLATE_PATH,
+    )
+    return proj
